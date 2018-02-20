@@ -3,20 +3,22 @@
     public class ECS
     {
         private int _threshold;
-        private readonly TempSensor _tempSensor;
-        private readonly Heater _heater;
+        private int _currentTemp;
+        private readonly ITempSensor _tempSensor;
+        private readonly IHeater _heater;
 
-        public ECS(int thr)
+        public ECS(int thr, ITempSensor tempSensor, IHeater heater)
         {
             SetThreshold(thr);
-            _tempSensor = new TempSensor();
-            _heater = new Heater();
+            _tempSensor = tempSensor;
+            _heater = heater;
+            _currentTemp = 0;
         }
 
         public void Regulate()
         {
-            var t = _tempSensor.GetTemp();
-            if (t < _threshold)
+            _currentTemp = _tempSensor.GetTemp();
+            if (_currentTemp < _threshold)
                 _heater.TurnOn();
             else
                 _heater.TurnOff();
@@ -35,12 +37,8 @@
 
         public int GetCurTemp()
         {
-            return 0;
+            return _currentTemp;
         }
 
-        public bool RunSelfTest()
-        {
-            return _tempSensor.RunSelfTest() && _heater.RunSelfTest();
-        }
     }
 }
