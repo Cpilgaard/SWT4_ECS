@@ -68,7 +68,7 @@ namespace ECS.Test.Unit
         [Test]
         public void Regulate_HighTemp_WindowOpen()
         {
-            _tempSensor.GetTemp().Returns(30);
+            _tempSensor.GetTemp().Returns(32);
             _uut.Regulate();
             _window.Open();
         }
