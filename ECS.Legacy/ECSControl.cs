@@ -6,12 +6,14 @@
         private int _currentTemp;
         private readonly ITempSensor _tempSensor;
         private readonly IHeater _heater;
+        private readonly IWindow _window;
 
-        public ECSControl(int thr, ITempSensor tempSensor, IHeater heater)
+        public ECSControl(int thr, ITempSensor tempSensor, IHeater heater, IWindow window)
         {
             SetThreshold(thr);
             _tempSensor = tempSensor;
             _heater = heater;
+            _window = window;
             _currentTemp = 0;
         }
 
@@ -19,9 +21,17 @@
         {
             _currentTemp = _tempSensor.GetTemp();
             if (_currentTemp < _threshold)
+            {
                 _heater.TurnOn();
+                _window.Open();
+            }
+
             else
+            {
                 _heater.TurnOff();
+                _window.Close();
+            }
+
 
         }
 

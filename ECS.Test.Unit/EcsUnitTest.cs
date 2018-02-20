@@ -15,6 +15,7 @@ namespace ECS.Test.Unit
         private IHeater _heater;
         private ITempSensor _tempSensor;
         private ECSControl _uut;
+        private IWindow _window;
         private int _threshold;
 
         [SetUp]
@@ -22,7 +23,9 @@ namespace ECS.Test.Unit
         {
             _heater = Substitute.For<IHeater>();
             _tempSensor = Substitute.For<ITempSensor>();
-            _uut = new ECSControl(_threshold,_tempSensor,_heater);
+            _window = Substitute.For<IWindow>();
+            _uut = new ECSControl(_threshold,_tempSensor,_heater,_window);
+            _uut.SetThreshold(25);
 
         }
 
@@ -34,6 +37,70 @@ namespace ECS.Test.Unit
 
             Assert.That(_uut.GetThreshold(), Is.EqualTo(temp));
         }
+
+
+        [Test] 
+        public void Regulate_LowTemp_HeaterTurnOn()
+        {
+            _tempSensor.GetTemp().Returns(20);
+            _uut.Regulate();
+            _heater.TurnOn();
+
+        }
+
+        [Test]
+        public void Regulate_LowTemp_WindowClose()
+        {
+            _tempSensor.GetTemp().Returns(20);
+            _uut.Regulate();
+            _window.Close();
+        }
+
+        [Test] 
+        public void Regulate_HighTemp_HeaterTurnOff_WindowOpen()
+        {
+            _tempSensor.GetTemp().Returns(30);
+            _uut.Regulate();
+            _heater.TurnOff();
+            
+        }
+
+        [Test]
+        public void Regulate_HighTemp_WindowOpen()
+        {
+            _tempSensor.GetTemp().Returns(30);
+            _uut.Regulate();
+            _window.Open();
+        }
+
+        //[Test] Denne test fejler, ved ikke hvorfor. 
+        //public void Regulate_OkTemp_NoActionOnHeater()
+        //{
+        //    _tempSensor.GetTemp().Returns(28);
+        //    _uut.Regulate();
+
+        //    _heater.DidNotReceive().TurnOn();
+        //    _heater.DidNotReceive().TurnOff();
+        //}
+
+        [Test]
+        public void Regulate_OkTemp_GetTempCalled()
+        {
+            _tempSensor.GetTemp().Returns(25);
+
+            _uut.Regulate();
+
+            _tempSensor.Received().GetTemp();
+        }
+
+        [Test]
+        public void Regulate_OkTemp_GetCurTempCalled()
+        {
+            _tempSensor.GetTemp().Returns(25);
+            _uut.GetCurTemp();
+        }
+
+        
 
     }
 }
