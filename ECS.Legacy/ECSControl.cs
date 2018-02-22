@@ -26,7 +26,7 @@
                 _window.Open();
             }
 
-            else
+            if(_currentTemp > _threshold)
             {
                 _heater.TurnOff();
                 _window.Close();

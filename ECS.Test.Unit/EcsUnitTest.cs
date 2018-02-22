@@ -73,15 +73,15 @@ namespace ECS.Test.Unit
             _window.Open();
         }
 
-        //[Test] Denne test fejler, ved ikke hvorfor. 
-        //public void Regulate_OkTemp_NoActionOnHeater()
-        //{
-        //    _tempSensor.GetTemp().Returns(28);
-        //    _uut.Regulate();
+        [Test] 
+        public void Regulate_OkTemp_NoActionOnHeater()
+        {
+            _tempSensor.GetTemp().Returns(25);
+            _uut.Regulate();
 
-        //    _heater.DidNotReceive().TurnOn();
-        //    _heater.DidNotReceive().TurnOff();
-        //}
+            _heater.DidNotReceive().TurnOn();
+            _heater.DidNotReceive().TurnOff();
+        }
 
         [Test]
         public void Regulate_OkTemp_GetTempCalled()
